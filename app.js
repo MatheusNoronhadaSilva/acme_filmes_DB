@@ -40,44 +40,50 @@ app.use(cors())
 
 const controllerFilmes = require('./controller/controller_filmes.js')
 
+const filmesDAO = require('./model/DAO/filme.js')
+
 /************************************ */
 
 
-    //Endpoint: Versão 1.0 que retorna os dados de um arquivo de filmes
-    //Período de utilização 01/2024 até 02/2024
-    app.get('/v1/acmeFilmes/filmes', cors(), (request, response) => {
+//Endpoint: Versão 1.0 que retorna os dados de um arquivo de filmes
+//Período de utilização 01/2024 até 02/2024
+app.get('/v1/acmeFilmes/filmes', cors(), (request, response) => {
 
-        let controleFilmes = require('./controller/funcoes')
+    let controleFilmes = require('./controller/funcoes')
 
-        const listaFilmes = controleFilmes.getListaFilmes()
-        if (listaFilmes) {
-            res.json(listaFilmes)
-        } else {
-            res.status(404).json({ erro: 'nenhum filme foi encontrado' })
-        }
-    })
+    const listaFilmes = controleFilmes.getListaFilmes()
+    if (listaFilmes) {
+        res.json(listaFilmes)
+    } else {
+        res.status(404).json({ erro: 'nenhum filme foi encontrado' })
+    }
+})
 
 app.get('/v2/acmeFilmes/filmes', cors(), async function (request, response) {
 
     let dadosFilmes = await controllerFilmes.getListarFilmes()
 
-    if(dadosFilmes){
+    if (dadosFilmes) {
         response.json(dadosFilmes)
         response.status(200)
-    } else{
-        response.json({message: 'nenhum registro encontrado'})
+    } else {
+        response.json({ message: 'nenhum registro encontrado' })
         response.status(404)
     }
 })
 
-app.get('/v1/acmeFilmes/filmes/nomes', cors(), (req, res) => {
+app.get('/v2/acmeFilmes/filmes/filtro', cors(), async function (req, response) {
 
-    let controleNomes = require('./controller/funcoes')
-    const listaNomes = controleNomes.getListaFilmesNomes()
-    if (listaNomes) {
-        res.json(listaNomes)
+    const nome = req.query.nome
+    console.log(nome)
+    const listaNomes = await controllerFilmes.getNomeFilme(nome)
+
+    if(listaNomes) {
+        response.json(listaNomes)
+        response.status(200)
     } else {
-        res.status(404).json({ erro: 'nenhum nome de filme foi encontrado' })
+        response.json({message: 'Não há nenhum filme com o nome parecido'})
+        response.status(404)
     }
 })
 
@@ -93,6 +99,17 @@ app.get('/v1/acmeFilmes/:id', cors(), (req, res) => {
         res.status(404).json({ erro: 'nenhum filme com esse id foi encontrado' })
     }
 })
+
+// app.get('/v1/acmeFilmes/filmes/nomes', cors(), (req, res) => {
+
+//     let controleNomes = require('./controller/funcoes')
+//     const listaNomes = controleNomes.getListaFilmesNomes()
+//     if (listaNomes) {
+//         res.json(listaNomes)
+//     } else {
+//         res.status(404).json({ erro: 'nenhum nome de filme foi encontrado' })
+//     }
+// })
 
 const PORT = 3030
 app.listen(PORT, () => {

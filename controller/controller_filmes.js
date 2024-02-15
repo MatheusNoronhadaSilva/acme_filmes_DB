@@ -20,13 +20,13 @@ const setExcluirFilmes = async function(){
     //Função para excluir um filme
 }
 
-const getListarFilmes = async function(){
+const getListarFilmes = async function(nome){
 
     //cria um objeto JSON
     let filmesJSON = {}; 
     
     //chama a função do DAO que retorna os filmes do DB
-    let dadosFilmes = await filmesDAO.selectAllFilmes()
+    let dadosFilmes = await filmesDAO.selectAllFilmes(nome)
 
     //validação para verificar se o DAO retornou dados
     if(dadosFilmes){
@@ -41,11 +41,29 @@ const getListarFilmes = async function(){
     }
 }
 
+const getNomeFilme = async function(nome) {
+
+    let nomeFilmeJSON = {}
+
+    let dadosNomeFilme = await filmesDAO.selectByNameFilme(nome)
+
+    if(dadosNomeFilme) {
+        nomeFilmeJSON.filmes = dadosNomeFilme
+        nomeFilmeJSON.quantidade = dadosNomeFilme.length
+        nomeFilmeJSON.status_code = 200
+
+        return nomeFilmeJSON
+    } else {
+        return false
+    }
+}
+
 const getBuscarFilme = async function(){
     //função para buscar um filme
 }
 
 module.exports = {
+    getNomeFilme,
     setInserirNovoFilme,
     setAtualizarFilme,
     setExcluirFilmes,

@@ -40,11 +40,25 @@ const selectAllFilmes = async function(){
         return false
 }
 
+const selectByNameFilme = async function(nome){
+    let sql = ` select * from tbl_filme where nome like "${nome}%"`
+    
+
+    let nomeFilme = await prisma.$queryRawUnsafe(sql)
+
+    if(nomeFilme.length > 0) {
+        return nomeFilme
+    } else {
+        return false
+    }
+}
+
 const selectByIdFilme = async function(){
     //função para buscar um filme do banco de dados pelo id
 }
 
 module.exports = {
+    selectByNameFilme,
     insertFilme,
     updateFilme,
     deleteFilme,
